@@ -13,11 +13,27 @@ angular.module('angularCrudApp')
     var expressServer = "http://express:3000/api";
 
     // Service logic
+    var deferred = $q.defer();
 
     //Data for postUser config
     var postUserConfig = {
         name: "Graham"
     };
+
+    var allUsers = $q.defer();
+
+    $http.get(expressServer + '/users')
+        .success(function(data, status, headers, config){
+            allUsers.resolve(data);
+            console.log('Status: ' + status + '\n' + 'Data: ');
+            console.log(data);
+        })
+        .error(function(data,status,headers,config){
+            allUsers.reject(data);
+            console.log(status);
+        });
+
+    //return allUsers.promise;
 
     // Public API here
     return {
@@ -39,13 +55,30 @@ angular.module('angularCrudApp')
         },
         // Gets all users
         getAllUsers: function () {
-            var deferred = $q.defer();
+            return allUsers.promise;
 
-            $http.get(expressServer + '/users')
+//            var deferred = $q.defer();
+//
+//            $http.get(expressServer + '/users')
+//                .success(function(data, status, headers, config){
+//                    deferred.resolve(data);
+//                    console.log('Status: ' + status + '\n' + 'Data: ');
+//                    console.log(data);
+//                })
+//                .error(function(data,status,headers,config){
+//                    deferred.reject(data);
+//                    console.log(status);
+//                });
+//
+//            return deferred.promise;
+        },
+        // Post a single user (requires name)
+        postUser: function(user) {
+            var deferred = $q.defer();
+            $http.post(expressServer + '/users', {name: user.name})
                 .success(function(data, status, headers, config){
                     deferred.resolve(data);
-                    console.log('Status: ' + status + '\n' + 'Data: ');
-                    console.log(data);
+                    console.log('User was saved to the database!')
                 })
                 .error(function(data,status,headers,config){
                     deferred.reject(data);
@@ -54,8 +87,8 @@ angular.module('angularCrudApp')
 
             return deferred.promise;
         },
-        //Post a single user (requires name)
-        postUser: function(user) {
+        // Edit a user
+        editUser: function(user) {
             var deferred = $q.defer();
             $http.post(expressServer + '/users', {name: user.name})
                 .success(function(data, status, headers, config){
@@ -70,4 +103,4 @@ angular.module('angularCrudApp')
             return deferred.promise;
         }
     }
-});
+  });

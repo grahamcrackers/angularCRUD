@@ -17,9 +17,11 @@ angular.module('angularCrudApp')
 
     console.log($cookies.myCookie);
 
-    dbF.getUsers().then(function(users){
+
+    dbF.getAllUsers().then(function(users){
         $scope.allUsers = users;
     });
+
 
 
     function cookieinfo() {

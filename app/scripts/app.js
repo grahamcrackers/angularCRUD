@@ -31,6 +31,10 @@ angular
         templateUrl: 'views/database.html',
         controller: 'DatabaseCtrl'
       })
+      .when('/promises', {
+        templateUrl: 'views/promises.html',
+        controller: 'PromisesCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
